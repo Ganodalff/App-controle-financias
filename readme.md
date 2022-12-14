@@ -4,9 +4,9 @@ Aplicativo desenvolvido para projeto da faculdade
 
 # Excutando o projeto
 
-1- Execute o comando `yarn install`
-
-2- Após isso execute o comando `yarn start`
+1- Clone o projeto com o comando `git clone` e a url
+2- Execute o comando `yarn install`
+3- Após isso execute o comando `yarn start`
 
 ---
 
