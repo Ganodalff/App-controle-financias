@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -13,14 +13,30 @@ import { styles } from "./styles";
 import { AntDesign } from "@expo/vector-icons";
 import useGoals from "../../hooks/useGoals";
 import dayjs from "dayjs";
+import { cashInDb, cashOutDb } from "../../services/db";
+import { useIsFocused } from "@react-navigation/native";
 
 const Dashboard = () => {
+  const isFocused = useIsFocused();
   const { data, refetch: goalRefetech } = useGoals("?isActiveGoal=1");
   const { data: goalCurrentData } = data || {};
   const { navigate } = useNavigation();
   const { data: goals, refetch: goalsRefetech } = useGoals("?isActiveGoal=0");
   const { data: goalsData } = goals || {};
   const [refreshing] = useState(false);
+  const [totalCashIn, setTotalCashIn] = useState(0);
+  const [totalCashOut, setTotalCashOut] = useState(0);
+
+  useEffect(() => {
+    const cashOut = cashOutDb.reduce((accumulator, obj) => {
+      return accumulator + parseFloat(obj.value);
+    }, 0);
+
+    const cashIn = cashInDb.reduce((accumulator, obj) => {
+      return accumulator + parseFloat(obj.value);
+    }, 0);
+    setTotalCashIn(cashIn), setTotalCashOut(cashOut);
+  }, [isFocused]);
 
   return (
     <Layout style={{ padding: 0 }}>
@@ -46,7 +62,10 @@ const Dashboard = () => {
           },
         ]}
       >
-        <TouchableOpacity style={{ alignItems: "center" }}>
+        <TouchableOpacity
+          style={{ alignItems: "center" }}
+          onPress={() => navigate("CashInList")}
+        >
           <Text
             style={{
               fontFamily: "Roboto_300Light",
@@ -61,11 +80,14 @@ const Dashboard = () => {
               fontSize: 16,
             }}
           >
-            {/* {parseFloat(balance.cashInput) ? balance.cashInput : "0"} */}
+            {totalCashIn}
           </Text>
           <AntDesign name="arrowup" size={24} color="green" />
         </TouchableOpacity>
-        <TouchableOpacity style={{ alignItems: "center" }}>
+        <TouchableOpacity
+          style={{ alignItems: "center" }}
+          onPress={() => navigate("CashOutList")}
+        >
           <Text
             style={{
               fontFamily: "Roboto_300Light",
@@ -80,7 +102,7 @@ const Dashboard = () => {
               fontSize: 16,
             }}
           >
-            {/* {parseFloat(balance.cashOutput) ? balance.cashOutput : "0"} */}
+            {totalCashOut}
           </Text>
           <AntDesign name="arrowdown" size={24} color="red" />
         </TouchableOpacity>
@@ -93,8 +115,7 @@ const Dashboard = () => {
             fontSize: 16,
           }}
         >
-          Saldo Atual R$:{" "}
-          {/* {parseFloat(balance.cashInput) - parseFloat(balance.cashOutput)} */}
+          Saldo Atual R$: {totalCashIn - totalCashOut}
         </Text>
       </View>
       <ScrollView

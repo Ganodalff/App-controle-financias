@@ -20,7 +20,7 @@ export type ApiPaginationResult<D = unknown> = {
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: true,
     },
   },
 });
