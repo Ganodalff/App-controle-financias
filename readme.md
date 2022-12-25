@@ -10,11 +10,9 @@ Aplicativo desenvolvido para projeto da faculdade
 
 3- Após isso execute o comando `yarn start`
 
----
 # Contruido com
 
 - Expo - React Native
 
----
 # Links
 - https://medium.com/linkapi-solutions/improve-your-commits-with-conventional-commits-72134a852d19
