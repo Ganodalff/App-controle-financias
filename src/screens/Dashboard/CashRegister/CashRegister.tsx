@@ -91,6 +91,7 @@ const CashRegister = () => {
                   value={value}
                 />
                 <Input
+                  style={{ backgroundColor: "transparent", padding: 0 }}
                   keyboardType="numeric"
                   onChangeText={onChange}
                   value={value}
@@ -98,17 +99,6 @@ const CashRegister = () => {
                   maxLength={5}
                 />
               </View>
-              // <Input
-              //   placeholder="Valor"
-              //   maxLength={7}
-              //   keyboardType="numeric"
-              //   onChangeText={onChange}
-              //   value={value}
-              //   style={{
-              //     fontFamily: "Roboto_400Regular",
-              //   }}
-              //   error={!!errors.value}
-              // />
             )}
           />
           <HelperText type="error">{errors.value?.message}</HelperText>
