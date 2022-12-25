@@ -91,7 +91,6 @@ const CashRegister = () => {
                   value={value}
                 />
                 <Input
-                  style={{ backgroundColor: "transparent", padding: 0 }}
                   keyboardType="numeric"
                   onChangeText={onChange}
                   value={value}

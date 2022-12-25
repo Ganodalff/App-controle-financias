@@ -90,7 +90,6 @@ const Goal = () => {
             }}
             render={({ field: { onChange, value } }) => (
               <Input
-                //placeholder={`${data?.value}` }
                 maxLength={7}
                 onChangeText={onChange}
                 value={value}
@@ -113,7 +112,6 @@ const Goal = () => {
             }}
             render={({ field: { onChange, value } }) => (
               <Input
-                //placeholder={`${data?.amount}`}
                 maxLength={7}
                 value={value}
                 onChangeText={onChange}
@@ -150,11 +148,3 @@ const Goal = () => {
   );
 };
 export default Goal;
-
-{
-  /* <Controller
-              control={control}
-              name="name"
-              defaultValue={data?.name}
-              render={({ field: { onChange, value } }) => ()}/> */
-}

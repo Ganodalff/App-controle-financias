@@ -1,5 +1,4 @@
 import {
-  KeyboardAvoidingView,
   ScrollView,
   View,
   ViewProps,
@@ -41,6 +40,7 @@ const Layout = ({ children, visible, ...props }: LayoutProps) => {
           padding: 10,
         }}
       >
+        
         <TouchableOpacity
           onPress={() => navigate("CashRegister")}
           disabled={visible}
