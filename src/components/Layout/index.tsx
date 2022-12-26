@@ -1,8 +1,4 @@
-import {
-  ScrollView,
-  View,
-  ViewProps,
-} from "react-native";
+import { ScrollView, View, ViewProps } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { TouchableOpacity } from "react-native";
@@ -35,12 +31,21 @@ const Layout = ({ children, visible, ...props }: LayoutProps) => {
       </ScrollView>
       <View
         style={{
-          justifyContent: "center",
+          flexDirection: "row",
+          justifyContent: "space-between",
           alignItems: "center",
           padding: 10,
+          paddingLeft:20,
+          paddingRight:20,
         }}
       >
-        
+        <TouchableOpacity
+          onPress={() => {
+            navigate("Dashboard");
+          }}
+        >
+          <AntDesign name="home" size={24} color="black" />
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => navigate("CashRegister")}
           disabled={visible}
@@ -57,6 +62,13 @@ const Layout = ({ children, visible, ...props }: LayoutProps) => {
           >
             <AntDesign name="plus" size={24} color="black" />
           </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            navigate("Home");
+          }}
+        >
+          <AntDesign name="linechart" size={24} color="black" />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
