@@ -6,7 +6,7 @@ export type GoalType = {
   name: string;
   value: number;
   amount: number;
-  finalDate: Date;
+  final_date: Date;
   isActiveGoal: boolean;
 };
 
