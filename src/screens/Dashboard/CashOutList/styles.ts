@@ -44,7 +44,13 @@ export const styles = StyleSheet.create({
     borderTopEndRadius: 30,
     borderBottomStartRadius: 30,
     borderBottomEndRadius: 30,
-    margin: 10,
-    width: 340,
+    margin: 5,
+    flexDirection: "row",
+  },
+  shadowProp: {
+    shadowColor: "#171717",
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
 });
