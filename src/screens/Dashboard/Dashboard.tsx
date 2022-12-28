@@ -1,12 +1,6 @@
-import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  RefreshControl,
-} from "react-native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+import React from "react";
+import { Text, View, TouchableOpacity, ScrollView } from "react-native";
 import Layout from "../../components/Layout";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { styles } from "./styles";
@@ -14,13 +8,22 @@ import { AntDesign } from "@expo/vector-icons";
 import useGoals from "../../hooks/useGoals";
 import dayjs from "dayjs";
 
+import useDeleteRecord from "../../hooks/useDeleteRecord";
+
 const Dashboard = () => {
-  const { data, refetch: goalRefetech } = useGoals("?isActiveGoal=1");
-  const { data: goalCurrentData } = data || {};
-  const { navigate } = useNavigation();
+  const { data: goal, refetch: goalRefetech } = useGoals("?isActiveGoal=1");
   const { data: goals, refetch: goalsRefetech } = useGoals("?isActiveGoal=0");
+  const { data: goalData } = goal || {};
   const { data: goalsData } = goals || {};
-  const [refreshing] = useState(false);
+  const { navigate } = useNavigation();
+  const isFocused = useIsFocused();
+
+  if (isFocused) refresh();
+
+  function refresh() {
+    goalRefetech();
+    goalsRefetech();
+  }
 
   return (
     <Layout style={{ padding: 0 }}>
@@ -93,15 +96,10 @@ const Dashboard = () => {
             fontSize: 16,
           }}
         >
-          Saldo Atual R$:{" "}
-          {/* {parseFloat(balance.cashInput) - parseFloat(balance.cashOutput)} */}
+          Saldo Atual R$:
         </Text>
       </View>
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={goalRefetech} />
-        }
-      >
+      <ScrollView>
         <TouchableOpacity
           onPress={() => navigate("Goal", 0)}
           style={[
@@ -120,7 +118,7 @@ const Dashboard = () => {
             Cadastrar nova meta
           </Text>
         </TouchableOpacity>
-        {goalCurrentData?.map(({ id, name, value, amount }) => (
+        {goalData?.map(({ id, name, value, amount }) => (
           <TouchableOpacity
             onPress={() => {
               navigate("Goal", { id: id });
@@ -163,12 +161,7 @@ const Dashboard = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <ScrollView
-        horizontal={true}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={goalsRefetech} />
-        }
-      >
+      <ScrollView horizontal={true}>
         {!goalsData?.length && (
           <View style={styles.carouselCard}>
             <Text
@@ -183,7 +176,7 @@ const Dashboard = () => {
             </Text>
           </View>
         )}
-        {goalsData?.map(({ name, finalDate, value, amount }) => (
+        {goalsData?.map(({ id, name, final_date, value, amount }) => (
           <View style={styles.carouselCard}>
             <Text style={{ fontSize: 18, fontFamily: "Roboto_300Light" }}>
               Meta
@@ -199,7 +192,7 @@ const Dashboard = () => {
               }}
             >
               Data de finalização da meta{" "}
-              {dayjs(finalDate).format("DD/MM/YYYY")}
+              {dayjs(final_date).format("DD/MM/YYYY")}
             </Text>
             <Text
               style={{
@@ -225,6 +218,23 @@ const Dashboard = () => {
             <Text style={{ fontSize: 14, fontFamily: "Roboto_400Regular" }}>
               R$ {amount}
             </Text>
+            <View
+              style={{
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 20,
+              }}
+            >
+              <TouchableOpacity
+                onPress={async () => {
+                  await useDeleteRecord("goal", id);
+                  refresh();
+                }}
+              >
+                <AntDesign name="closecircleo" size={30} color="black" />
+              </TouchableOpacity>
+            </View>
           </View>
         ))}
       </ScrollView>

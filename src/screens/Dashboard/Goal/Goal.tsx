@@ -8,7 +8,7 @@ import Layout from "../../../components/Layout";
 import Input from "../../../components/Input";
 import InputLabel from "../../../components/InputLabel";
 import SubmitButton from "../../../components/Button";
-import useGoal, { GoalType } from "../../../hooks/useGoal";
+import useGoal from "../../../hooks/useGoal";
 import useGoalMutation from "../../../hooks/useGoalMutation";
 import { Controller, useForm } from "react-hook-form";
 import { HelperText } from "react-native-paper";
@@ -19,8 +19,9 @@ const Goal = () => {
   const {
     params: { id },
   } = useRoute<GoalProps>();
-  const { data } = useGoal(id);
+  const { data, isLoading } = useGoal(id);
   const { navigate } = useNavigation();
+  const { mutateAsync: useGoalMutate } = useGoalMutation();
   const {
     control,
     handleSubmit,
@@ -33,23 +34,20 @@ const Goal = () => {
     },
   });
 
-  const { mutateAsync: useGoalMutate, isLoading } = useGoalMutation();
-
   const saveGoal = async (data) => {
     try {
-      useGoalMutate({ ...data, isActiveGoal: true });
+      await useGoalMutate({ ...data, isActiveGoal: true });
       navigate("Dashboard");
     } catch (error) {}
   };
 
   const finishGoal = async (data) => {
     try {
-      useGoalMutate({ ...data, isActiveGoal: false });
+      await useGoalMutate({ ...data, isActiveGoal: false });
       navigate("Dashboard");
     } catch (error) {}
   };
-
-  if (data)
+  if (!isLoading)
     return (
       <Layout style={{ padding: 0 }}>
         <View style={styles.content}>
@@ -62,14 +60,15 @@ const Goal = () => {
           <View style={{ margin: 10 }}>
             <InputLabel title="Nome do objetivo" />
             <Controller
+              defaultValue={data?.name}
               control={control}
               name="name"
-              defaultValue={data.name}
               rules={{
                 required: { message: "Campo é obrigatório", value: true },
               }}
               render={({ field: { onChange, value } }) => (
                 <Input
+                  defaultValue={data?.name}
                   maxLength={30}
                   onChangeText={onChange}
                   value={value}
@@ -83,15 +82,15 @@ const Goal = () => {
             <HelperText type="error">{errors.name?.message}</HelperText>
             <InputLabel title="Valor" />
             <Controller
+              defaultValue={data?.value}
               control={control}
               name="value"
-              defaultValue={data.value}
               rules={{
                 required: { message: "Campo é obrigatório", value: true },
               }}
               render={({ field: { onChange, value } }) => (
                 <Input
-                  placeholder={`${data?.value}`}
+                  defaultValue={data?.value?.toString()}
                   maxLength={7}
                   onChangeText={onChange}
                   value={value}
@@ -106,21 +105,22 @@ const Goal = () => {
             <HelperText type="error">{errors.value?.message}</HelperText>
             <InputLabel title="Já tenho" />
             <Controller
+              defaultValue={data?.amount}
               control={control}
               name="amount"
-              defaultValue={data.amount}
               rules={{
                 required: { message: "Campo é obrigatório", value: true },
               }}
               render={({ field: { onChange, value } }) => (
                 <Input
-                  placeholder={`${data?.amount}`}
-                  maxLength={7}
+                  style={{
+                    borderRadius: 8,
+                    backgroundColor: "#f4f4f4",
+                  }}
+                  defaultValue={data?.amount?.toString()}
+                  maxLength={12}
                   value={value}
                   onChangeText={onChange}
-                  style={{
-                    fontFamily: "Roboto_400Regular",
-                  }}
                   keyboardType="numeric"
                   error={!!errors.amount}
                 />
@@ -151,11 +151,3 @@ const Goal = () => {
     );
 };
 export default Goal;
-
-{
-  /* <Controller
-              control={control}
-              name="name"
-              defaultValue={data?.name}
-              render={({ field: { onChange, value } }) => ()}/> */
-}

@@ -1,14 +1,6 @@
-import {
-  RefreshControl,
-  ScrollView,
-  TouchableOpacity,
-  View,
-  ViewProps,
-  Text,
-} from "react-native";
+import { ScrollView, View, ViewProps } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
 
 type LayoutProps = {
   children: string | React.ReactNode;
