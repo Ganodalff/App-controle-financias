@@ -20,7 +20,8 @@ import {
 import React from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./types";
-
+import { LogBox } from 'react-native';
+LogBox.ignoreAllLogs()
 export default function App() {
   const [fontsLoaded] = useFonts({
     Roboto_100Thin,
