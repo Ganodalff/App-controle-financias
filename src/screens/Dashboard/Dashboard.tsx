@@ -1,12 +1,6 @@
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  RefreshControl,
-} from "react-native";
+import { Text, View, TouchableOpacity, ScrollView } from "react-native";
 import Layout from "../../components/Layout";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { styles } from "./styles";
@@ -15,15 +9,15 @@ import useGoals from "../../hooks/useGoals";
 import dayjs from "dayjs";
 import { cashInDb, cashOutDb } from "../../services/db";
 import { useIsFocused } from "@react-navigation/native";
+import useDeleteRecord from "../../hooks/useDeleteRecord";
 
 const Dashboard = () => {
   const isFocused = useIsFocused();
-  const { data, refetch: goalRefetech } = useGoals("?isActiveGoal=1");
-  const { data: goalCurrentData } = data || {};
-  const { navigate } = useNavigation();
+  const { data: goal, refetch: goalRefetech } = useGoals("?isActiveGoal=1");
   const { data: goals, refetch: goalsRefetech } = useGoals("?isActiveGoal=0");
+  const { data: goalData } = goal || {};
   const { data: goalsData } = goals || {};
-  const [refreshing] = useState(false);
+  const { navigate } = useNavigation();
   const [totalCashIn, setTotalCashIn] = useState(0);
   const [totalCashOut, setTotalCashOut] = useState(0);
 
@@ -124,16 +118,17 @@ const Dashboard = () => {
           Saldo Atual R$: {totalCashIn - totalCashOut}
         </Text>
       </View>
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={goalRefetech} />
-        }
-      >
+      <ScrollView>
         <TouchableOpacity
+          disabled={goalData?.length ? true : false}
           onPress={() => navigate("Goal", 0)}
           style={[
             styles.content,
-            { borderTopStartRadius: 30, borderTopEndRadius: 30, marginTop: 10 },
+            {
+              borderTopStartRadius: 30,
+              borderTopEndRadius: 30,
+              marginTop: 10,
+            },
           ]}
         >
           <Text
@@ -147,7 +142,7 @@ const Dashboard = () => {
             Cadastrar nova meta
           </Text>
         </TouchableOpacity>
-        {goalCurrentData?.map(({ id, name, value, amount }) => (
+        {goalData?.map(({ id, name, value, amount }) => (
           <TouchableOpacity
             onPress={() => {
               navigate("Goal", { id: id });
@@ -190,12 +185,7 @@ const Dashboard = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <ScrollView
-        horizontal={true}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={goalsRefetech} />
-        }
-      >
+      <ScrollView horizontal={true}>
         {!goalsData?.length && (
           <View style={styles.carouselCard}>
             <Text
@@ -210,7 +200,7 @@ const Dashboard = () => {
             </Text>
           </View>
         )}
-        {goalsData?.map(({ name, finalDate, value, amount }) => (
+        {goalsData?.map(({ id, name, finalDate, value, amount }) => (
           <View style={styles.carouselCard}>
             <Text style={{ fontSize: 18, fontFamily: "Roboto_300Light" }}>
               Meta
@@ -252,6 +242,23 @@ const Dashboard = () => {
             <Text style={{ fontSize: 14, fontFamily: "Roboto_400Regular" }}>
               R$ {amount}
             </Text>
+            <View
+              style={{
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 20,
+              }}
+            >
+              <TouchableOpacity
+                onPress={async () => {
+                  useDeleteRecord("goal", id);
+                  refresh();
+                }}
+              >
+                <AntDesign name="closecircleo" size={30} color="black" />
+              </TouchableOpacity>
+            </View>
           </View>
         ))}
       </ScrollView>
