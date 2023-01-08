@@ -10,31 +10,28 @@ import dayjs from "dayjs";
 import { cashInDb, cashOutDb } from "../../services/db";
 import { useIsFocused } from "@react-navigation/native";
 import useDeleteRecord from "../../hooks/useDeleteRecord";
+import useAmount from "../../hooks/useAmount";
 
 const Dashboard = () => {
   const isFocused = useIsFocused();
   const { data: goal, refetch: goalRefetech } = useGoals("?isActiveGoal=1");
   const { data: goals, refetch: goalsRefetech } = useGoals("?isActiveGoal=0");
+  const { data: amount, refetch: amountRefetch } = useAmount();
+  const { cashInAmount, cashOutAmount } = amount || {
+    cashInAmount: 0,
+    cashOutAmount: 0,
+  };
   const { data: goalData } = goal || {};
   const { data: goalsData } = goals || {};
   const { navigate } = useNavigation();
-  const [totalCashIn, setTotalCashIn] = useState(0);
-  const [totalCashOut, setTotalCashOut] = useState(0);
 
   function refresh() {
     goalRefetech();
     goalsRefetech();
+    amountRefetch();
   }
 
   useEffect(() => {
-    const cashOut = cashOutDb.reduce((accumulator, obj) => {
-      return accumulator + parseFloat(obj.value);
-    }, 0);
-
-    const cashIn = cashInDb.reduce((accumulator, obj) => {
-      return accumulator + parseFloat(obj.value);
-    }, 0);
-    setTotalCashIn(cashIn), setTotalCashOut(cashOut);
     refresh();
   }, [isFocused]);
 
@@ -68,7 +65,7 @@ const Dashboard = () => {
         >
           <Text
             style={{
-              fontFamily: "Roboto_300Light",
+              fontFamily: "SoraRegular",
               fontSize: 14,
             }}
           >
@@ -76,11 +73,11 @@ const Dashboard = () => {
           </Text>
           <Text
             style={{
-              fontFamily: "Roboto_400Regular",
+              fontFamily: "SoraRegular",
               fontSize: 16,
             }}
           >
-            {totalCashIn}
+            {cashInAmount}
           </Text>
           <AntDesign name="arrowup" size={24} color="green" />
         </TouchableOpacity>
@@ -90,7 +87,7 @@ const Dashboard = () => {
         >
           <Text
             style={{
-              fontFamily: "Roboto_300Light",
+              fontFamily: "SoraRegular",
               fontSize: 14,
             }}
           >
@@ -98,11 +95,11 @@ const Dashboard = () => {
           </Text>
           <Text
             style={{
-              fontFamily: "Roboto_400Regular",
+              fontFamily: "SoraRegular",
               fontSize: 16,
             }}
           >
-            {totalCashOut}
+            {cashOutAmount}
           </Text>
           <AntDesign name="arrowdown" size={24} color="red" />
         </TouchableOpacity>
@@ -111,11 +108,12 @@ const Dashboard = () => {
         <Text
           style={{
             textAlign: "center",
-            fontFamily: "Roboto_300Light",
+            fontFamily: "SoraRegular",
             fontSize: 16,
           }}
         >
-          Saldo Atual R$: {totalCashIn - totalCashOut}
+          Saldo Atual R$:
+          {(cashInAmount - cashOutAmount).toFixed(2)}
         </Text>
       </View>
       <ScrollView>
@@ -134,7 +132,7 @@ const Dashboard = () => {
           <Text
             style={{
               fontSize: 18,
-              fontFamily: "Roboto_300Light",
+              fontFamily: "SoraRegular",
               color: "darkgray",
               textAlign: "center",
             }}
@@ -152,7 +150,7 @@ const Dashboard = () => {
               <Text
                 style={{
                   textAlign: "center",
-                  fontFamily: "Roboto_400Regular",
+                  fontFamily: "SoraRegular",
                   fontSize: 16,
                 }}
               >
@@ -160,20 +158,16 @@ const Dashboard = () => {
               </Text>
               {name && (
                 <View style={{ marginLeft: 20, marginTop: 10 }}>
-                  <Text
-                    style={{ fontSize: 24, fontFamily: "Roboto_400Regular" }}
-                  >
+                  <Text style={{ fontSize: 24, fontFamily: "SoraRegular" }}>
                     {name}
                   </Text>
-                  <Text
-                    style={{ fontSize: 17, fontFamily: "Roboto_400Regular" }}
-                  >
+                  <Text style={{ fontSize: 17, fontFamily: "SoraRegular" }}>
                     R${value}
                   </Text>
                   <Text
                     style={{
                       fontSize: 14,
-                      fontFamily: "Roboto_400Regular",
+                      fontFamily: "SoraRegular",
                       color: "green",
                     }}
                   >
@@ -191,7 +185,7 @@ const Dashboard = () => {
             <Text
               style={{
                 fontSize: 18,
-                fontFamily: "Roboto_300Light",
+                fontFamily: "SoraRegular",
                 color: "darkgray",
                 textAlign: "center",
               }}
@@ -202,17 +196,17 @@ const Dashboard = () => {
         )}
         {goalsData?.map(({ id, name, finalDate, value, amount }) => (
           <View style={styles.carouselCard}>
-            <Text style={{ fontSize: 18, fontFamily: "Roboto_300Light" }}>
+            <Text style={{ fontSize: 18, fontFamily: "SoraRegular" }}>
               Meta
             </Text>
-            <Text style={{ fontSize: 22, fontFamily: "Roboto_400Regular" }}>
+            <Text style={{ fontSize: 22, fontFamily: "SoraRegular" }}>
               {name}
             </Text>
             <Text
               style={{
                 fontSize: 18,
                 marginTop: 10,
-                fontFamily: "Roboto_300Light",
+                fontFamily: "SoraRegular",
               }}
             >
               Data de finalização da meta{" "}
@@ -222,24 +216,24 @@ const Dashboard = () => {
               style={{
                 fontSize: 16,
                 marginTop: 10,
-                fontFamily: "Roboto_300Light",
+                fontFamily: "SoraRegular",
               }}
             >
               Valor
             </Text>
-            <Text style={{ fontSize: 18, fontFamily: "Roboto_400Regular" }}>
+            <Text style={{ fontSize: 18, fontFamily: "SoraRegular" }}>
               R$ {value}
             </Text>
             <Text
               style={{
                 fontSize: 12,
                 marginTop: 10,
-                fontFamily: "Roboto_300Light",
+                fontFamily: "SoraRegular",
               }}
             >
               Valor Atingido
             </Text>
-            <Text style={{ fontSize: 14, fontFamily: "Roboto_400Regular" }}>
+            <Text style={{ fontSize: 14, fontFamily: "SoraRegular" }}>
               R$ {amount}
             </Text>
             <View

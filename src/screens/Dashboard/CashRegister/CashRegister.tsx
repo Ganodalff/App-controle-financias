@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, ToastAndroid } from "react-native";
 import Layout from "../../../components/Layout";
 import { styles } from "./styles";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -8,12 +8,15 @@ import { Controller, useForm } from "react-hook-form";
 import Input from "../../../components/Input";
 import { HelperText, RadioButton } from "react-native-paper";
 import SubmitButton from "../../../components/Button";
-import { CashDbType, cashInDb, cashOutDb } from "../../../services/db";
+// import { CashDbType, cashInDb, cashOutDb } from "../../../services/db";
 import { useNavigation } from "@react-navigation/native";
 import { Slider } from "@miblanchard/react-native-slider";
+import useBalanceMutation from "../../../hooks/useBalanceMutation";
+import { BalanceType } from "../../../hooks/useBalance";
 
 const CashRegister = () => {
   const { navigate } = useNavigation();
+  const { mutateAsync: useBalanceMutate, isLoading } = useBalanceMutation();
   const {
     control,
     handleSubmit,
@@ -21,22 +24,30 @@ const CashRegister = () => {
   } = useForm({
     defaultValues: {
       name: "",
-      value: "",
+      value: "0",
       category: "",
-      cashRegisterType: "cashIn",
+      cashRegisterType: "cash_in",
     },
   });
 
-  const saveCashRegister = async (data: CashDbType) => {
-    if (data.cashRegisterType === "cashIn") {
-      cashInDb.push({
-        ...data,
-        date: new Date(),
-      });
+  const saveCashRegister = async (data: BalanceType) => {
+    if (isLoading) return;
+    if (data.cashRegisterType === "cash_in") {
+      try {
+        await useBalanceMutate({ ...data, cashIn: true });
+        return navigate("Dashboard");
+      } catch (e) {
+        ToastAndroid.show("Não foi possível cadastrar", ToastAndroid.SHORT);
+        return navigate("Dashboard");
+      }
+    }
+    try {
+      await useBalanceMutate({ ...data, cashOut: true });
+      return navigate("Dashboard");
+    } catch (e) {
+      ToastAndroid.show("Não foi possível cadastrar", ToastAndroid.SHORT);
       return navigate("Dashboard");
     }
-    cashOutDb.push({ ...data, date: new Date() });
-    return navigate("Dashboard");
   };
 
   return (
@@ -63,7 +74,7 @@ const CashRegister = () => {
                 onChangeText={onChange}
                 value={value}
                 style={{
-                  fontFamily: "Roboto_400Regular",
+                  fontFamily: "SoraRegular",
                 }}
                 error={!!errors.name}
               />
@@ -85,9 +96,7 @@ const CashRegister = () => {
                   trackClickable={true}
                   minimumValue={0}
                   maximumValue={5000}
-                  onValueChange={(value) => {
-                    onChange(value);
-                  }}
+                  onValueChange={(value) => onChange(`${value}`)}
                   value={value}
                 />
                 <Input
@@ -115,7 +124,7 @@ const CashRegister = () => {
                 onChangeText={onChange}
                 value={value}
                 style={{
-                  fontFamily: "Roboto_400Regular",
+                  fontFamily: "SoraRegular",
                 }}
                 error={!!errors.category}
               />
@@ -124,7 +133,6 @@ const CashRegister = () => {
           <HelperText type="error">{errors.category?.message}</HelperText>
           <View style={{ marginTop: 10 }}>
             <Controller
-              defaultValue={"cashIn"}
               control={control}
               name="cashRegisterType"
               rules={{
@@ -139,15 +147,20 @@ const CashRegister = () => {
                 >
                   <RadioButton.Item
                     label="Entrada"
-                    value="cashIn"
+                    value="cash_in"
                     color="green"
                   />
-                  <RadioButton.Item label="Saída" value="cashOut" color="red" />
+                  <RadioButton.Item
+                    label="Saída"
+                    value="cash_out"
+                    color="red"
+                  />
                 </RadioButton.Group>
               )}
             />
           </View>
           <SubmitButton
+            loading={isLoading}
             children={"Cadastrar"}
             onPress={handleSubmit(saveCashRegister)}
           ></SubmitButton>

@@ -3,14 +3,14 @@ import { View, Text, ScrollView } from "react-native";
 import Layout from "../../../components/Layout";
 import { styles } from "./styles";
 import Ionicons from "@expo/vector-icons/Ionicons";
-
 import dayjs from "dayjs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import useBalances from "../../../hooks/useBalances";
 
-const CashOutList = () => {
-  const { data } = useBalances("?cash=cash_out");
-  const { data: cashOut } = data || {};
+const CashInList = () => {
+  const { data } = useBalances("?cash=cash_in");
+  const { data: cashIn } = data || {};
+
   return (
     <Layout style={{ padding: 0 }}>
       <View style={styles.content}>
@@ -20,7 +20,7 @@ const CashOutList = () => {
         <Text style={styles.textNameHeader}>ADMIN</Text>
       </View>
       <ScrollView>
-        {cashOut?.map(({ name, category, cash_out, created_at }) => {
+        {cashIn?.map(({ name, created_at, category, cash_in }) => {
           return (
             <View style={styles.carouselCard}>
               <View
@@ -32,9 +32,9 @@ const CashOutList = () => {
                 }}
               >
                 <MaterialCommunityIcons
-                  name="cash-minus"
+                  name="cash-plus"
                   size={50}
-                  color="red"
+                  color="green"
                 />
               </View>
               <View
@@ -56,7 +56,7 @@ const CashOutList = () => {
                   {name}
                 </Text>
                 <Text style={{ fontFamily: "SoraRegular", fontSize: 17 }}>
-                  R$ {cash_out}
+                  R$ {cash_in}
                 </Text>
                 <Text style={{ fontFamily: "SoraRegular" }}>
                   {category}
@@ -73,4 +73,4 @@ const CashOutList = () => {
   );
 };
 
-export default CashOutList;
+export default CashInList;

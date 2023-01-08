@@ -10,13 +10,13 @@ export type GoalType = {
   isActiveGoal: boolean;
 };
 
-const getGoals = async (id?: string): Promise<GoalType> => {
+const getGoal = async (id?: string): Promise<GoalType> => {
   const { data } = await api.get(`goal/${id}`);
   return data;
 };
 
-export default function useGoals(query?: string): UseQueryResult<GoalType> {
+export default function useGoal(query?: string): UseQueryResult<GoalType> {
   return useQuery(["goal", query], ({ queryKey: [_, query = ""] }) =>
-    getGoals(query)
+    getGoal(query)
   );
 }

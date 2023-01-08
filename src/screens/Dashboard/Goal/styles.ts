@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
     fontSize: 14,
-    fontFamily: "Roboto_400Regular",
+    fontFamily: "SoraRegular",
   },
   goalCard: {
     flex: 1,

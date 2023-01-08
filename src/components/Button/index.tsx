@@ -1,6 +1,7 @@
 import { ForwardRefRenderFunction } from "react";
 import { Button, ButtonProps } from "react-native-paper";
 import { Text } from "react-native";
+import React from "react";
 
 type SubmitButtonProps = { children: string } & Omit<ButtonProps, "theme">;
 
@@ -27,7 +28,7 @@ const SubmitButton: ForwardRefRenderFunction<ButtonProps, SubmitButtonProps> = (
         style={{
           color: "#fff",
           letterSpacing: 1,
-          fontFamily: "Roboto_500Medium",
+          fontFamily: "SoraRegular",
         }}
       >
         {props.children}

@@ -42,7 +42,7 @@ const Login = () => {
             marginTop: 20,
             marginBottom: 50,
             textAlign: "center",
-            fontFamily: "Roboto_300Light",
+            fontFamily: "SoraRegular",
           }}
         >
           É hora de começar a sua jornada financeira.

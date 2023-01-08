@@ -73,7 +73,7 @@ const Goal = () => {
                   onChangeText={onChange}
                   value={value}
                   style={{
-                    fontFamily: "Roboto_400Regular",
+                    fontFamily: "SoraRegular",
                   }}
                   error={!!errors.name}
                 />
@@ -95,7 +95,7 @@ const Goal = () => {
                   onChangeText={onChange}
                   value={value}
                   style={{
-                    fontFamily: "Roboto_400Regular",
+                    fontFamily: "SoraRegular",
                   }}
                   keyboardType="numeric"
                   error={!!errors.value}

@@ -1,7 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import CashInList from "../screens/Dashboard/CashInList/CashOutList";
+import CashInList from "../screens/Dashboard/CashInList/CashInList";
 import CashOutList from "../screens/Dashboard/CashOutList/CashOutList";
 import CashRegister from "../screens/Dashboard/CashRegister/CashRegister";
 import Dashboard from "../screens/Dashboard/Dashboard";

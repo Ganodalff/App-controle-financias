@@ -12,6 +12,6 @@ export const styles = StyleSheet.create({
     fontSize: 30,
     marginTop: 50,
     textAlign: "center",
-    fontFamily: "Roboto_300Light",
+    fontFamily: "SoraRegular",
   },
 });

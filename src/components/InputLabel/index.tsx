@@ -7,7 +7,7 @@ type InputLabelProps = {
 const InputLabel = ({ title }: InputLabelProps) => {
   return (
     <Text
-      style={{ marginTop: 10, fontSize: 16, fontFamily: "Roboto_400Regular" }}
+      style={{ marginTop: 10, fontSize: 16, fontFamily: "SoraRegular" }}
     >
       {title}
     </Text>
